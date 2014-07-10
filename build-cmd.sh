@@ -78,6 +78,52 @@ pushd "$TOP/$SOURCE_DIR"
             popd
         ;;
 
+        "windows64")
+            load_vsvars
+
+            mkdir -p "$stage/lib/debug"
+            mkdir -p "$stage/lib/release"
+
+            pushd "$TOP/$SOURCE_DIR/win32"
+
+                cscript configure.js zlib=yes icu=no static=yes debug=yes python=no iconv=no \
+                    compiler=msvc \
+                    include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
+                    lib="$(cygpath -w $stage/packages/lib/debug)" \
+                    prefix="$(cygpath -w $stage)" \
+                    sodir="$(cygpath -w $stage/lib/debug)" \
+                    libdir="$(cygpath -w $stage/lib/debug)"
+
+                nmake /f Makefile.msvc ZLIB_LIBRARY=zlibd.lib all
+                nmake /f Makefile.msvc install
+
+                # conditionally run unit tests
+                if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
+                    nmake /f Makefile.msvc checktests
+                fi
+
+                nmake /f Makefile.msvc clean
+
+                cscript configure.js zlib=yes icu=no static=yes debug=no python=no iconv=no \
+                    compiler=msvc \
+                    include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
+                    lib="$(cygpath -w $stage/packages/lib/release)" \
+                    prefix="$(cygpath -w $stage)" \
+                    sodir="$(cygpath -w $stage/lib/release)" \
+                    libdir="$(cygpath -w $stage/lib/release)"
+
+                nmake /f Makefile.msvc ZLIB_LIBRARY=zlib.lib all
+                nmake /f Makefile.msvc install
+
+                # conditionally run unit tests
+                if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
+                    nmake /f Makefile.msvc checktests
+                fi
+
+                nmake /f Makefile.msvc clean
+            popd
+        ;;
+
         "linux")
             # Linux build environment at Linden comes pre-polluted with stuff that can
             # seriously damage 3rd-party builds.  Environmental garbage you can expect
