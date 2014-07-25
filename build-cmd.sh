@@ -207,7 +207,7 @@ pushd "$TOP/$SOURCE_DIR"
             # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
             sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/
             
-            opts="${TARGET_OPTS:--arch i386 -arch x86_64 -iwithsysroot $sdk -mmacosx-version-min=10.6}"
+            opts="${TARGET_OPTS:--arch i386 -arch x86_64 -iwithsysroot $sdk -mmacosx-version-min=10.7}"
 
             # Debug first
 
@@ -216,9 +216,11 @@ pushd "$TOP/$SOURCE_DIR"
             # may find the system zlib.h but it won't find the
             # packaged one.
             CFLAGS="$opts -O0 -gdwarf-2 -I$stage/packages/include/zlib" \
-                CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
-                LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/debug" \
-                ./configure --with-python=no --with-pic --with-zlib \
+                CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib -stdlib=libc++" \
+                LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/debug -stdlib=libc++" \
+                CC="clang" CXX="clang++" \
+                ./configure --with-python=no --with-pic \
+                --with-zlib="${stage}/packages/lib/debug" \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage"/lib/debug
             make 
@@ -235,7 +237,8 @@ pushd "$TOP/$SOURCE_DIR"
             CFLAGS="$opts -O2 -gdwarf-2 -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release" \
-                ./configure --with-python=no --with-pic --with-zlib \
+                ./configure --with-python=no --with-pic \
+                --with-zlib="${stage}/packages/lib/release" \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage"/lib/release
             make 
