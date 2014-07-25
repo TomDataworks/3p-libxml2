@@ -221,8 +221,9 @@ pushd "$TOP/$SOURCE_DIR"
                 CC="clang" CXX="clang++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/debug" \
+                --with-icu="${stage}/packages/lib" \
                 --disable-shared --enable-static \
-                --prefix="$stage" --libdir="$stage"/lib/debug
+                --prefix="$stage"
             make 
             make install
 
@@ -234,13 +235,14 @@ pushd "$TOP/$SOURCE_DIR"
             make clean
 
             # Release last for configuration headers
-            CFLAGS="$opts -O2 -gdwarf-2 -I$stage/packages/include/zlib" \
-                CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
-                LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release" \
+            CFLAGS="$opts -O2 -gdwarf-2 -I$stage/packages/include/zlib -I$stage/packages/include/unicode" \
+                CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib -I$stage/packages/include/unicode -stdlib=libc++" \
+                LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release -stdlib=libc++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/release" \
+                --with-icu="${stage}/packages/lib" \
                 --disable-shared --enable-static \
-                --prefix="$stage" --libdir="$stage"/lib/release
+                --prefix="$stage"
             make 
             make install
 
