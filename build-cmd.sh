@@ -223,7 +223,7 @@ pushd "$TOP/$SOURCE_DIR"
                 --with-zlib="${stage}/packages/lib/debug" \
                 --with-icu="${stage}/packages/lib" \
                 --disable-shared --enable-static \
-                --prefix="$stage"
+                --prefix="$stage" --libdir="$stage/lib/debug"
             make 
             make install
 
@@ -242,7 +242,7 @@ pushd "$TOP/$SOURCE_DIR"
                 --with-zlib="${stage}/packages/lib/release" \
                 --with-icu="${stage}/packages/lib" \
                 --disable-shared --enable-static \
-                --prefix="$stage"
+                --prefix="$stage" --libdir="$stage/lib/release"
             make 
             make install
 
