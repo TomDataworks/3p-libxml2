@@ -225,6 +225,7 @@ pushd "$TOP/$SOURCE_DIR"
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/debug" \
                 --with-icu="${stage}/packages/lib" \
+                --without-http --without-ftp --without-iconv \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/debug"
             make 
@@ -244,6 +245,7 @@ pushd "$TOP/$SOURCE_DIR"
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/release" \
                 --with-icu="${stage}/packages/lib" \
+                --without-http --without-ftp --without-iconv \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/release"
             make 
