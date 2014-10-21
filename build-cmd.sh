@@ -40,10 +40,10 @@ pushd "$TOP/$SOURCE_DIR"
 
             pushd "$TOP/$SOURCE_DIR/win32"
 
-                cscript configure.js zlib=yes icu=no static=yes debug=yes python=no iconv=no \
+                cscript configure.js zlib=yes icu=yes static=yes debug=yes python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib/debug)" \
+                    lib="$(cygpath -w $stage/packages/lib);$(cygpath -w $stage/packages/lib/debug)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/debug)" \
                     libdir="$(cygpath -w $stage/lib/debug)"
@@ -58,10 +58,10 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc clean
 
-                cscript configure.js zlib=yes icu=no static=yes debug=no python=no iconv=no \
+                cscript configure.js zlib=yes icu=yes static=yes debug=no python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib/release)" \
+                    lib="$(cygpath -w $stage/packages/lib);$(cygpath -w $stage/packages/lib/release)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/release)" \
                     libdir="$(cygpath -w $stage/lib/release)"
@@ -86,16 +86,18 @@ pushd "$TOP/$SOURCE_DIR"
 
             pushd "$TOP/$SOURCE_DIR/win32"
 
-                cscript configure.js zlib=yes icu=no static=yes debug=yes python=no iconv=no \
+                cscript configure.js zlib=yes icu=yes static=yes debug=yes python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib/debug)" \
+                    lib="$(cygpath -w $stage/packages/lib64);$(cygpath -w $stage/packages/lib/debug)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/debug)" \
                     libdir="$(cygpath -w $stage/lib/debug)"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlibd.lib all
                 nmake /f Makefile.msvc install
+                cp -f $stage/packages/lib/debug/icu*.dll "bin.msvc"
+                cp -f $stage/packages/lib/release/icudt*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -104,16 +106,17 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc clean
 
-                cscript configure.js zlib=yes icu=no static=yes debug=no python=no iconv=no \
+                cscript configure.js zlib=yes icu=yes static=yes debug=no python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib/release)" \
+                    lib="$(cygpath -w $stage/packages/lib64);$(cygpath -w $stage/packages/lib/release)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/release)" \
                     libdir="$(cygpath -w $stage/lib/release)"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlib.lib all
                 nmake /f Makefile.msvc install
+                cp -f $stage/packages/lib/release/icu*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
