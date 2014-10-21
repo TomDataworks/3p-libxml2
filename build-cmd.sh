@@ -9,7 +9,7 @@ TOP="$(dirname "$0")"
 
 PROJECT=libxml2
 LICENSE=Copyright
-VERSION="2.9.1"
+VERSION="2.9.2"
 SOURCE_DIR="$PROJECT"
 
 
