@@ -50,6 +50,8 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlibd.lib all
                 nmake /f Makefile.msvc install
+                cp -f $stage/packages/lib/debug/icu*.dll "bin.msvc"
+                cp -f $stage/packages/lib/release/icudt*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -68,6 +70,7 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlib.lib all
                 nmake /f Makefile.msvc install
+                cp -f $stage/packages/lib/release/icu*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
