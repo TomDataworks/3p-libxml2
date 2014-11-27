@@ -170,7 +170,8 @@ pushd "$TOP/$SOURCE_DIR"
             # get the dependent packages in there as well.  Process
             # may find the system zlib.h but it won't find the
             # packaged one.
-            CFLAGS="$opts -g -O0 -I$stage/packages/include/zlib" \
+            PATH="$stage/packages/bin:$PATH" \
+                CFLAGS="$opts -g -O0 -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -L$stage/packages/lib/debug" \
                 ./configure --with-python=no --with-pic --with-zlib \
@@ -187,7 +188,8 @@ pushd "$TOP/$SOURCE_DIR"
             make clean
 
             # Release last
-            CFLAGS="$opts -g -O2 -I$stage/packages/include/zlib" \
+            PATH="$stage/packages/bin:$PATH" \
+                CFLAGS="$opts -g -O2 -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -L$stage/packages/lib/release" \
                 ./configure --with-python=no --with-pic --with-zlib \
@@ -203,7 +205,83 @@ pushd "$TOP/$SOURCE_DIR"
 
             make clean
         ;;
+        "linux64")
+            # Linux build environment at Linden comes pre-polluted with stuff that can
+            # seriously damage 3rd-party builds.  Environmental garbage you can expect
+            # includes:
+            #
+            #    DISTCC_POTENTIAL_HOSTS     arch           root        CXXFLAGS
+            #    DISTCC_LOCATION            top            branch      CC
+            #    DISTCC_HOSTS               build_name     suffix      CXX
+            #    LSDISTCC_ARGS              repo           prefix      CFLAGS
+            #    cxx_version                AUTOBUILD      SIGN        CPPFLAGS
+            #
+            # So, clear out bits that shouldn't affect our configure-directed build
+            # but which do nonetheless.
+            #
+            # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
 
+            # Default target to 64-bit
+            opts="${TARGET_OPTS:--m64}"
+
+            # Handle any deliberate platform targeting
+            if [ -z "$TARGET_CPPFLAGS" ]; then
+                # Remove sysroot contamination from build environment
+                unset CPPFLAGS
+            else
+                # Incorporate special pre-processing flags
+                export CPPFLAGS="$TARGET_CPPFLAGS"
+            fi
+
+            # Debug first
+
+            # CPPFLAGS will be used by configure and we need to
+            # get the dependent packages in there as well.  Process
+            # may find the system zlib.h but it won't find the
+            # packaged one.
+            PATH=$stage/packages/bin:$PATH \
+                CFLAGS="$opts -g -Og -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CXXFLAGS="$opts -g -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
+                LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/debug" \
+                LIBS="-lstdc++" \
+                ./configure --with-python=no \
+                --with-zlib --with-icu \
+                --without-http --without-ftp --without-iconv \
+                --disable-shared --enable-static \
+                --prefix="$stage" --libdir="$stage"/lib/debug
+            make
+            make install
+
+            # conditionally run unit tests
+            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
+                make check
+            fi
+
+            make clean
+
+            # Release last
+            PATH=$stage/packages/bin:$PATH \
+                CFLAGS="$opts -g -O2 -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CXXFLAGS="$opts -g -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
+                LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/release" \
+                LIBS="-lstdc++" \
+                ./configure --with-python=no \
+                --with-zlib --with-icu \
+                --without-http --without-ftp --without-iconv \
+                --disable-shared --enable-static \
+                --prefix="$stage" --libdir="$stage"/lib/release
+            make
+            make install
+
+            # conditionally run unit tests
+            if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
+                make check
+            fi
+
+            make clean
+        ;;
         "darwin")
             # Select SDK with full path.  This shouldn't have much effect on this
             # build but adding to establish a consistent pattern.
