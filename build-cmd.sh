@@ -241,13 +241,13 @@ pushd "$TOP/$SOURCE_DIR"
             # packaged one.
             PATH=$stage/packages/bin:$PATH \
                 CFLAGS="$opts -g -Og -I$stage/packages/include -I$stage/packages/include/zlib" \
-                CXXFLAGS="$opts -g -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CXXFLAGS="$opts -g -Og -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/debug" \
                 LIBS="-lstdc++" \
                 ./configure --with-python=no \
                 --with-zlib --with-icu \
-                --without-http --without-ftp --without-iconv \
+                --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage"/lib/debug
             make
@@ -262,14 +262,14 @@ pushd "$TOP/$SOURCE_DIR"
 
             # Release last
             PATH=$stage/packages/bin:$PATH \
-                CFLAGS="$opts -g -O2 -I$stage/packages/include -I$stage/packages/include/zlib" \
-                CXXFLAGS="$opts -g -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CFLAGS="$opts -O2 -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CXXFLAGS="$opts -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
-                LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/release" \
+                LDFLAGS="$opts -std=c++11 -L$stage/packages/lib/release" \
                 LIBS="-lstdc++" \
                 ./configure --with-python=no \
                 --with-zlib --with-icu \
-                --without-http --without-ftp --without-iconv \
+                --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage"/lib/release
             make
@@ -305,7 +305,7 @@ pushd "$TOP/$SOURCE_DIR"
                 CC="clang" CXX="clang++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/debug" \
-                --with-icu="${stage}/packages/lib" \
+                --with-icu="${stage}/packages/lib/debug" \
                 --without-http --without-ftp --without-iconv \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/debug"
@@ -325,7 +325,7 @@ pushd "$TOP/$SOURCE_DIR"
                 LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release -stdlib=libc++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/release" \
-                --with-icu="${stage}/packages/lib" \
+                --with-icu="${stage}/packages/lib/release" \
                 --without-http --without-ftp --without-iconv \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/release"
