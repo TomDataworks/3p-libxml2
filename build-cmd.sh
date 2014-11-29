@@ -248,7 +248,7 @@ pushd "$TOP/$SOURCE_DIR"
                 ./configure --with-python=no \
                 --with-zlib --with-icu \
                 --without-http --without-ftp --without-iconv --without-lzma \
-                --disable-shared --enable-static \
+                --disable-shared --enable-static --with-pic \
                 --prefix="$stage" --libdir="$stage"/lib/debug
             make
             make install
@@ -270,7 +270,7 @@ pushd "$TOP/$SOURCE_DIR"
                 ./configure --with-python=no \
                 --with-zlib --with-icu \
                 --without-http --without-ftp --without-iconv --without-lzma \
-                --disable-shared --enable-static \
+                --disable-shared --enable-static --with-pic \
                 --prefix="$stage" --libdir="$stage"/lib/release
             make
             make install
