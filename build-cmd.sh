@@ -249,16 +249,16 @@ pushd "$TOP/$SOURCE_DIR"
                 --with-zlib --with-icu \
                 --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static --with-pic \
-                --prefix="$stage" --libdir="$stage"/lib/debug
+                --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/debug" --includedir="\${prefix}/include"
             make
-            make install
+            make install DESTDIR="$stage"
 
             # conditionally run unit tests
             if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
                 make check
             fi
 
-            make clean
+            make distclean
 
             # Release last
             PATH=$stage/packages/bin:$PATH \
@@ -271,16 +271,16 @@ pushd "$TOP/$SOURCE_DIR"
                 --with-zlib --with-icu \
                 --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static --with-pic \
-                --prefix="$stage" --libdir="$stage"/lib/release
+                --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/release" --includedir="\${prefix}/include"
             make
-            make install
+            make install DESTDIR="$stage"
 
             # conditionally run unit tests
             if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
                 make check
             fi
 
-            make clean
+            make distclean
         ;;
         "darwin")
             # Select SDK with full path.  This shouldn't have much effect on this
