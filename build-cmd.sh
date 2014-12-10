@@ -233,13 +233,15 @@ pushd "$TOP/$SOURCE_DIR"
                 export CPPFLAGS="$TARGET_CPPFLAGS"
             fi
 
+            fix_pkgconfig_prefix "$stage/packages"
+
             # Debug first
 
             # CPPFLAGS will be used by configure and we need to
             # get the dependent packages in there as well.  Process
             # may find the system zlib.h but it won't find the
             # packaged one.
-            PATH=$stage/packages/bin:$PATH \
+            PATH="$stage/packages/bin:$PATH" \
                 CFLAGS="$opts -g -Og -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CXXFLAGS="$opts -g -Og -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
@@ -261,7 +263,7 @@ pushd "$TOP/$SOURCE_DIR"
             make distclean
 
             # Release last
-            PATH=$stage/packages/bin:$PATH \
+            PATH="$stage/packages/bin:$PATH" \
                 CFLAGS="$opts -O2 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CXXFLAGS="$opts -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
