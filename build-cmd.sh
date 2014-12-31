@@ -29,6 +29,8 @@ set -x
 stage="$(pwd)"
 [ -f "$stage"/packages/include/zlib/zlib.h ] || fail "You haven't installed packages yet."
 
+echo "${VERSION}" > "${stage}/VERSION.txt"
+
 pushd "$TOP/$SOURCE_DIR"
     case "$AUTOBUILD_PLATFORM" in
 
@@ -43,7 +45,7 @@ pushd "$TOP/$SOURCE_DIR"
                 cscript configure.js zlib=yes icu=yes static=yes debug=yes python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib);$(cygpath -w $stage/packages/lib/debug)" \
+                    lib="$(cygpath -w $stage/packages/lib/debug)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/debug)" \
                     libdir="$(cygpath -w $stage/lib/debug)"
@@ -63,7 +65,7 @@ pushd "$TOP/$SOURCE_DIR"
                 cscript configure.js zlib=yes icu=yes static=yes debug=no python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib);$(cygpath -w $stage/packages/lib/release)" \
+                    lib="$(cygpath -w $stage/packages/lib/release)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/release)" \
                     libdir="$(cygpath -w $stage/lib/release)"
@@ -92,7 +94,7 @@ pushd "$TOP/$SOURCE_DIR"
                 cscript configure.js zlib=yes icu=yes static=yes debug=yes python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib64);$(cygpath -w $stage/packages/lib/debug)" \
+                    lib="$(cygpath -w $stage/packages/lib/debug)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/debug)" \
                     libdir="$(cygpath -w $stage/lib/debug)"
@@ -112,7 +114,7 @@ pushd "$TOP/$SOURCE_DIR"
                 cscript configure.js zlib=yes icu=yes static=yes debug=no python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
-                    lib="$(cygpath -w $stage/packages/lib64);$(cygpath -w $stage/packages/lib/release)" \
+                    lib="$(cygpath -w $stage/packages/lib/release)" \
                     prefix="$(cygpath -w $stage)" \
                     sodir="$(cygpath -w $stage/lib/release)" \
                     libdir="$(cygpath -w $stage/lib/release)"
