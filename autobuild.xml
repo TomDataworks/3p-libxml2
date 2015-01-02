@@ -22,11 +22,11 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>fb008865a8d94bebe016a536156b5265</string>
+              <string>c4a9252c4dcbf55f30109f36c593c27e</string>
               <key>hash_algorithm</key>
               <string>md5</string>
               <key>url</key>
-              <string>https://bitbucket.org/alchemyviewer/publiclibs-darwin2/downloads/icu4c-54.1-darwin-201501011153.tar.bz2</string>
+              <string>https://bitbucket.org/alchemyviewer/publiclibs-darwin2/downloads/icu4c-54.1-darwin-201501011952.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
