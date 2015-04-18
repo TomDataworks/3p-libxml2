@@ -148,10 +148,10 @@ pushd "$TOP/$SOURCE_DIR"
             #
             # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
 
-            # Prefer gcc-4.6 if available.
-            if [ -x /usr/bin/gcc-4.6 -a -x /usr/bin/g++-4.6 ]; then
-                export CC=/usr/bin/gcc-4.6
-                export CXX=/usr/bin/g++-4.6
+            # Prefer gcc-4.8 if available.
+            if [ -x /usr/bin/gcc-4.8 -a -x /usr/bin/g++-4.8 ]; then
+                export CC=/usr/bin/gcc-4.8
+                export CXX=/usr/bin/g++-4.8
             fi
 
             # Default target to 32-bit
@@ -222,9 +222,17 @@ pushd "$TOP/$SOURCE_DIR"
             # but which do nonetheless.
             #
             # unset DISTCC_HOSTS CC CXX CFLAGS CPPFLAGS CXXFLAGS
+ 
+           # Prefer gcc-4.8 if available.
+            if [ -x /usr/bin/gcc-4.8 -a -x /usr/bin/g++-4.8 ]; then
+                export CC=/usr/bin/gcc-4.8
+                export CXX=/usr/bin/g++-4.8
+            fi
 
             # Default target to 64-bit
             opts="${TARGET_OPTS:--m64}"
+            JOBS=`cat /proc/cpuinfo | grep processor | wc -l`
+            HARDENED="-fstack-protector-strong -D_FORTIFY_SOURCE=2"
 
             # Handle any deliberate platform targeting
             if [ -z "$TARGET_CPPFLAGS" ]; then
@@ -243,8 +251,7 @@ pushd "$TOP/$SOURCE_DIR"
             # get the dependent packages in there as well.  Process
             # may find the system zlib.h but it won't find the
             # packaged one.
-            PATH="$stage/packages/bin:$PATH" \
-                CFLAGS="$opts -g -Og -I$stage/packages/include -I$stage/packages/include/zlib" \
+            CFLAGS="$opts -g -Og -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CXXFLAGS="$opts -g -Og -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/debug" \
@@ -254,7 +261,7 @@ pushd "$TOP/$SOURCE_DIR"
                 --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static --with-pic \
                 --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/debug" --includedir="\${prefix}/include"
-            make
+            make -j$JOBS
             make install DESTDIR="$stage"
 
             # conditionally run unit tests
@@ -265,9 +272,8 @@ pushd "$TOP/$SOURCE_DIR"
             make distclean
 
             # Release last
-            PATH="$stage/packages/bin:$PATH" \
-                CFLAGS="$opts -O2 -I$stage/packages/include -I$stage/packages/include/zlib" \
-                CXXFLAGS="$opts -O2 -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
+            CFLAGS="$opts -O2 -g $HARDENED -I$stage/packages/include -I$stage/packages/include/zlib" \
+                CXXFLAGS="$opts -O2 -g $HARDENED -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -std=c++11 -L$stage/packages/lib/release" \
                 LIBS="-lstdc++" \
@@ -276,7 +282,7 @@ pushd "$TOP/$SOURCE_DIR"
                 --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static --with-pic \
                 --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/release" --includedir="\${prefix}/include"
-            make
+            make -j$JOBS
             make install DESTDIR="$stage"
 
             # conditionally run unit tests
