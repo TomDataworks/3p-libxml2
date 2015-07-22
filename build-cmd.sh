@@ -42,7 +42,7 @@ pushd "$TOP/$SOURCE_DIR"
 
             pushd "$TOP/$SOURCE_DIR/win32"
 
-                cscript configure.js zlib=yes icu=yes static=yes debug=yes python=no iconv=no \
+                cscript configure.js zlib=yes static=yes debug=yes python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
                     lib="$(cygpath -w $stage/packages/lib/debug)" \
@@ -52,8 +52,6 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlibd.lib all
                 nmake /f Makefile.msvc install
-                cp -f $stage/packages/lib/debug/icu*.dll "bin.msvc"
-                cp -f $stage/packages/lib/release/icudt*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -62,7 +60,7 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc clean
 
-                cscript configure.js zlib=yes icu=yes static=yes debug=no python=no iconv=no \
+                cscript configure.js zlib=yes static=yes debug=no python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
                     lib="$(cygpath -w $stage/packages/lib/release)" \
@@ -72,7 +70,6 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlib.lib all
                 nmake /f Makefile.msvc install
-                cp -f $stage/packages/lib/release/icu*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -91,7 +88,7 @@ pushd "$TOP/$SOURCE_DIR"
 
             pushd "$TOP/$SOURCE_DIR/win32"
 
-                cscript configure.js zlib=yes icu=yes static=yes debug=yes python=no iconv=no \
+                cscript configure.js zlib=yes static=yes debug=yes python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
                     lib="$(cygpath -w $stage/packages/lib/debug)" \
@@ -101,8 +98,6 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlibd.lib all
                 nmake /f Makefile.msvc install
-                cp -f $stage/packages/lib/debug/icu*.dll "bin.msvc"
-                cp -f $stage/packages/lib/release/icudt*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -111,7 +106,7 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc clean
 
-                cscript configure.js zlib=yes icu=yes static=yes debug=no python=no iconv=no \
+                cscript configure.js zlib=yes static=yes debug=no python=no iconv=no \
                     compiler=msvc \
                     include="$(cygpath -w $stage/packages/include);$(cygpath -w $stage/packages/include/zlib)" \
                     lib="$(cygpath -w $stage/packages/lib/release)" \
@@ -121,7 +116,6 @@ pushd "$TOP/$SOURCE_DIR"
 
                 nmake /f Makefile.msvc ZLIB_LIBRARY=zlib.lib all
                 nmake /f Makefile.msvc install
-                cp -f $stage/packages/lib/release/icu*.dll "bin.msvc"
 
                 # conditionally run unit tests
                 if [ "${DISABLE_UNIT_TESTS:-0}" = "0" ]; then
@@ -257,7 +251,7 @@ pushd "$TOP/$SOURCE_DIR"
                 LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/debug" \
                 LIBS="-lstdc++" \
                 ./configure --with-python=no \
-                --with-zlib --with-icu \
+                --with-zlib --with-iconv \
                 --without-http --without-ftp --without-iconv --without-lzma \
                 --disable-shared --enable-static --with-pic \
                 --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/debug" --includedir="\${prefix}/include"
@@ -278,8 +272,8 @@ pushd "$TOP/$SOURCE_DIR"
                 LDFLAGS="$opts -std=c++11 -L$stage/packages/lib/release" \
                 LIBS="-lstdc++" \
                 ./configure --with-python=no \
-                --with-zlib --with-icu \
-                --without-http --without-ftp --without-iconv --without-lzma \
+                --with-zlib --with-iconv \
+                --without-http --without-ftp --without-lzma \
                 --disable-shared --enable-static --with-pic \
                 --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/release" --includedir="\${prefix}/include"
             make -j$JOBS
@@ -315,8 +309,7 @@ pushd "$TOP/$SOURCE_DIR"
                 CC="clang" CXX="clang++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/debug" \
-                --with-icu="${stage}/packages/lib/debug" \
-                --without-http --without-ftp --without-iconv \
+                --with-iconv --without-http --without-ftp \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/debug"
             make 
@@ -335,8 +328,7 @@ pushd "$TOP/$SOURCE_DIR"
                 LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release -stdlib=libc++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/release" \
-                --with-icu="${stage}/packages/lib/release" \
-                --without-http --without-ftp --without-iconv \
+                --with-iconv --without-http --without-ftp \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/release"
             make 
