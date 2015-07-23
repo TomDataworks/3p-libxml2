@@ -249,10 +249,9 @@ pushd "$TOP/$SOURCE_DIR"
                 CXXFLAGS="$opts -g -Og -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -std=c++11 -L$stage/packages/lib/debug" \
-                LIBS="-lstdc++" \
                 ./configure --with-python=no \
                 --with-zlib --with-iconv \
-                --without-http --without-ftp --without-iconv --without-lzma \
+                --without-http --without-ftp --without-lzma \
                 --disable-shared --enable-static --with-pic \
                 --prefix="\${AUTOBUILD_PACKAGES_DIR}" --libdir="\${prefix}/lib/debug" --includedir="\${prefix}/include"
             make -j$JOBS
@@ -270,7 +269,6 @@ pushd "$TOP/$SOURCE_DIR"
                 CXXFLAGS="$opts -O2 -g $HARDENED -std=c++11 -I$stage/packages/include -I$stage/packages/include/zlib" \
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -std=c++11 -L$stage/packages/lib/release" \
-                LIBS="-lstdc++" \
                 ./configure --with-python=no \
                 --with-zlib --with-iconv \
                 --without-http --without-ftp --without-lzma \
