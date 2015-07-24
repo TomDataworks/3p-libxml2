@@ -307,7 +307,8 @@ pushd "$TOP/$SOURCE_DIR"
                 CC="clang" CXX="clang++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/debug" \
-                --with-iconv --without-http --without-ftp \
+                --with-iconv="/usr" --without-lzma \
+                --without-http --without-ftp \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/debug"
             make 
@@ -326,7 +327,8 @@ pushd "$TOP/$SOURCE_DIR"
                 LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release -stdlib=libc++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/release" \
-                --with-iconv --without-http --without-ftp \
+                --with-iconv="/usr" --without-lzma \
+                --without-http --without-ftp \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/release"
             make 
