@@ -293,7 +293,7 @@ pushd "$TOP/$SOURCE_DIR"
             # sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk/
             sdk=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/
             
-            opts="${TARGET_OPTS:--arch i386 -arch x86_64 -iwithsysroot $sdk -mmacosx-version-min=10.8}"
+            opts="${TARGET_OPTS:--arch x86_64 -iwithsysroot $sdk -mmacosx-version-min=10.8}"
 
             # Debug first
 
@@ -307,10 +307,10 @@ pushd "$TOP/$SOURCE_DIR"
                 CC="clang" CXX="clang++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/debug" \
-                --with-iconv="/usr" --without-lzma \
+                --without-iconv --without-lzma \
                 --without-http --without-ftp \
                 --disable-shared --enable-static \
-                --prefix="$stage" --libdir="$stage/lib/debug"
+                --prefix="${stage}" --libdir="${stage}/lib/debug"
             make 
             make install
 
@@ -327,7 +327,7 @@ pushd "$TOP/$SOURCE_DIR"
                 LDFLAGS="$opts -gdwarf-2 -L$stage/packages/lib/release -stdlib=libc++" \
                 ./configure --with-python=no --with-pic \
                 --with-zlib="${stage}/packages/lib/release" \
-                --with-iconv="/usr" --without-lzma \
+                --without-iconv --without-lzma \
                 --without-http --without-ftp \
                 --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage/lib/release"
