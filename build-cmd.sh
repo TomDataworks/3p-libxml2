@@ -171,7 +171,7 @@ pushd "$TOP/$SOURCE_DIR"
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -L$stage/packages/lib/debug" \
                 ./configure --with-python=no --with-pic --with-zlib \
-                --disable-shared --enable-static \
+                --without-lzma --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage"/lib/debug
             make
             make install
@@ -189,7 +189,7 @@ pushd "$TOP/$SOURCE_DIR"
                 CPPFLAGS="$CPPFLAGS -I$stage/packages/include/zlib" \
                 LDFLAGS="$opts -g -L$stage/packages/lib/release" \
                 ./configure --with-python=no --with-pic --with-zlib \
-                --disable-shared --enable-static \
+                --without-lzma --disable-shared --enable-static \
                 --prefix="$stage" --libdir="$stage"/lib/release
             make
             make install
